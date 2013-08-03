@@ -1,4 +1,4 @@
-HellWord
+HelloWord
 ========
 
-HellWord
+HelloWord
