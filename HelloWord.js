@@ -8,7 +8,7 @@
 #
 # Filename: HelloWord.js
 #
-# Description: 
+# Description:
 #
 =============================================================================*/
-alert("HelloWord");
+alert("HelloWord");//alert
