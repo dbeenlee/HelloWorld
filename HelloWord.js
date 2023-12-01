@@ -2,13 +2,15 @@
 #
 # Author: cli - cli@1XiangHu.com
 #
-# QQ : 280569432
+# QQ: 280569432
 #
-# Last modified: 2013-08-03 14:48
+# Last modified: 2013-08-03 14: 48
 #
 # Filename: HelloWord.js
 #
-# Description:
+# Description: 
 #
 =============================================================================*/
-alert("HelloWord");//alert
+alert("HelloWord");
+//Date
+//test
