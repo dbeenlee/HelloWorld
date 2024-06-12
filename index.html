@@ -17,7 +17,7 @@
   </div>
   <script>
     $(function(){
-      $('input[name="tijiao"]').click(function(){
+      $('input[name="tijiao"]').click(function(){ 
         var name = $('input[name="name"]').val();
         $.post('index.php', {name: name}, function(data) {
             $('#title').html(data.html);
