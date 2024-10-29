@@ -17,6 +17,11 @@
   </div>
   <script>
     $(function(){
+      var a = 123;
+      var e = 'asd';
+      u = "".concat(a, "&sub_type=add_chapter&set_id=").concat(e,"&pay_read_action=add&is_pay_training_camp=1");
+      console.log(u);
+
       $('input[name="tijiao"]').click(function(){ 
         var name = $('input[name="name"]').val();
         $.post('index.php', {name: name}, function(data) {

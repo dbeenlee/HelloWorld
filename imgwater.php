@@ -3,25 +3,25 @@ $_G = [
     'setting' => [
         'imagelib' => 1, //图片处理库类型:0-GD，1-ImageMagick
         'imageimpath' => '',
-        'attachdir' => 'D:/webSite/HelloWorld',//本地附件保存位置:服务器路径，属性 777，必须为 web 可访问到的目录，结尾不加 "/"，相对目录务必以 "./" 开头
+        'attachdir' => './',//本地附件保存位置:服务器路径，属性 777，必须为 web 可访问到的目录，结尾不加 "/"，相对目录务必以 "./" 开头
         'thumbquality' => 100,//缩略图质量: 设置图片附件缩略图的质量参数，范围为 0～100 的整数，数值越大结果图片效果越好，但尺寸也越大
-        'watermarkstatus' => 9,
+        'watermarkstatus' => 5,
         'watermarkminwidth' => 0,
         'watermarkminheight' => 0,
         'watermarktype' => "text",
         'watermarktext' => [
             "text" => "61626364656667",
-            "fontpath" => "D:\webSite\HelloWorld\image/PilsenPlakat.ttf",
+            "fontpath" => "./image/images/black.ttf",
             "size" => "26",
             "angle" => "0",
             "color" => "#ffddcc",
-            "shadowx" => "10",
-            "shadowy" => "10",
+            "shadowx" => "2",
+            "shadowy" => "2",
             "shadowcolor" => "#ff0000",
-            "translatex" => "15",
-            "translatey" => "15",
-            "skewx" => "5",
-            "skewy" => "5",
+            "translatex" => "2",
+            "translatey" => "2",
+            "skewx" => "50",
+            "skewy" => "10",
         ],
         'watermarktrans' => 50,
         'watermarkquality' => 90,
@@ -152,10 +152,12 @@ class image
         if (!$this->param['watermarkstatus'] || ($this->param['watermarkminwidth'] && $this->imginfo['width'] <= $this->param['watermarkminwidth'] && $this->param['watermarkminheight'] && $this->imginfo['height'] <= $this->param['watermarkminheight'])) {
             return $this->returncode(0);
         }
-        $this->param['watermarkfile'] = './image/' . ($this->param['watermarktype'] == 'png' ? 'watermark.png' : 'watermark.gif');
+        $this->param['watermarkfile'] = './image/images/' . ($this->param['watermarktype'] == 'png' ? 'watermark.png' : 'watermark.gif');
         // print_r($this->param);
         if (!is_readable($this->param['watermarkfile']) || ($this->param['watermarktype'] == 'text' && (!file_exists($this->param['watermarktext']['fontpath']) || !is_file($this->param['watermarktext']['fontpath'])))) {
             var_dump([
+                $this->param['watermarkfile'],
+                $this->param['watermarktext']['fontpath'],
                 !is_readable($this->param['watermarkfile']),
                 ($this->param['watermarktype'] == 'text' && (!file_exists($this->param['watermarktext']['fontpath']) || !is_file($this->param['watermarktext']['fontpath']))),
             ]);
@@ -711,22 +713,22 @@ class image
             $dw = new ImagickDraw();
             $dw->setFont($this->param['watermarktext']['fontpath']);
             $dw->setFontSize($this->param['watermarktext']['size']);
+            $shadow = clone $dw;
 
             if (($this->param['watermarktext']['shadowx'] || $this->param['watermarktext']['shadowy']) && $this->param['watermarktext']['shadowcolor']) {
-                $dw->setFillColor(new ImagickPixel($this->param['watermarktext']['shadowcolor']));
-                $dw->setGravity($gravity);
+                $shadow->setFillColor(new ImagickPixel($this->param['watermarktext']['shadowcolor']));
+                $shadow->setGravity($gravity);
                 if ($translate) {
-                    $dw->translate($this->param['watermarktext']['translatex'], $this->param['watermarktext']['translatey']);
+                    $shadow->translate($this->param['watermarktext']['translatex'], $this->param['watermarktext']['translatey']);
                 }
                 if ($skewX) {
-                    $dw->skewX($this->param['watermarktext']['skewx']);
+                    $shadow->skewX($this->param['watermarktext']['skewx']);
                 }
                 if ($skewY) {
-                    $dw->skewY($this->param['watermarktext']['skewy']);
+                    $shadow->skewY($this->param['watermarktext']['skewy']);
                 }
-                $dw->annotation($this->param['watermarktext']['shadowx'], $this->param['watermarktext']['shadowy'], escapeshellcmd(pack("H*", $this->param['watermarktext']['text'])));
-                $canvas->drawImage($dw);
-
+                $shadow->annotation($this->param['watermarktext']['shadowx'], $this->param['watermarktext']['shadowy'], $watermarktextcvt);
+                $canvas->drawImage($shadow);
             }
 
             $dw->setFillColor(new ImagickPixel($this->param['watermarktext']['color']));
@@ -741,7 +743,7 @@ class image
                 $dw->skewY($this->param['watermarktext']['skewy']);
             }
             $dw->rotate($angle);
-            $dw->annotation(0, 0, escapeshellcmd(pack("H*", $this->param['watermarktext']['text'])));
+            $dw->annotation(0, 0, $watermarktextcvt);
 
             $canvas->drawImage($dw);
 
@@ -763,6 +765,6 @@ class image
 }
 
 $image = new image;
-if (!($r = $image->Watermark('./image/banner04.jpg', './image/temp/watermark_temp3.jpg'))) {
+if (!($r = $image->Watermark('./image/images/banner04.jpg', './image/temp/watermark_temp3.jpg'))) {
     $r = $image->error();
 }
